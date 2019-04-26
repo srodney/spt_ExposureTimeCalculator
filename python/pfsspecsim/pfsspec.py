@@ -15,6 +15,8 @@ from pfs.datamodel.pfsConfig import PfsConfig
 from pfs.datamodel.pfsArm import PfsArmSet
 from pfs.datamodel.pfsObject import PfsObject, makePfsObject
 
+WAV_ERR_SHIFT = 3
+
 
 def arm_name(arm_num):
     arm_num = np.array(arm_num)
@@ -344,7 +346,7 @@ class Pfsspec(object):
             countsp = np.where(counts == 0, float(self.params['countsMin']), counts)  # version of counts with zero pixels replaced
         else:
             countsp = counts
-        if self.sky_sub_mode == 'residual':
+        if self.sky_sub_mode == 'residual' or self.sky_sub_mode == 'residual2':
             snr1 = countsp / np.sqrt(smp_mtrx * countsp + nsv_rnd_mtrx) * np.sqrt(nexp)
             snr2 = countsp / np.sqrt(smp_mtrx * countsp + (nsv_rnd_mtrx + nsv_sys_mtrx)) * np.sqrt(nexp)
         else:
@@ -386,7 +388,7 @@ class Pfsspec(object):
 
         for armStr, data in pfsArmSet.data.items():
             thisArm = (arm == armStr)
-            if self.sky_sub_mode == 'residual':
+            if self.sky_sub_mode == 'residual' or self.sky_sub_mode == 'residual2':
                 sky_res_fac = np.random.normal(0.0, self.sky_sub_err)
             else:
                 sky_res_fac = 0.0
@@ -400,7 +402,12 @@ class Pfsspec(object):
                             skyres = skm_sysref[thisArm] * sky_res_fac
                             flux.append(flam[thisArm, i] + np.random.normal(0.0, sigma1[thisArm, i] * np.sqrt(nexp)) + skyres)
                         data.flux.append(np.nanmean(flux, axis=0))
-                        print('OK')
+                    elif self.sky_sub_mode == 'residual2':
+                        flux = []
+                        for j in range(nexp):
+                            skyres = (skm_sysref[thisArm] - np.roll(skm_sysref[thisArm], WAV_ERR_SHIFT)) * sky_res_fac
+                            flux.append(flam[thisArm, i] + np.random.normal(0.0, sigma1[thisArm, i] * np.sqrt(nexp)) + skyres)
+                        data.flux.append(np.nanmean(flux, axis=0))
                     else:
                         data.flux.append(flam[thisArm, i] + np.random.normal(0.0, sigma1[thisArm, i]))
                     data.sky.append(sky[thisArm])
@@ -415,6 +422,12 @@ class Pfsspec(object):
                         flux = []
                         for j in range(nexp):
                             skyres = skm_sysref[thisArm] * sky_res_fac
+                            flux.append(flam[thisArm, 0] + np.random.normal(0.0, sigma1[thisArm, 0] * np.sqrt(nexp)) + skyres)
+                        data.flux.append(np.nanmean(flux, axis=0))
+                    elif self.sky_sub_mode == 'residual2':
+                        flux = []
+                        for j in range(nexp):
+                            skyres = (skm_sysref[thisArm] - np.roll(skm_sysref[thisArm], WAV_ERR_SHIFT)) * sky_res_fac
                             flux.append(flam[thisArm, 0] + np.random.normal(0.0, sigma1[thisArm, 0] * np.sqrt(nexp)) + skyres)
                         data.flux.append(np.nanmean(flux, axis=0))
                     else:
