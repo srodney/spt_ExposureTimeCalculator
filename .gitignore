@@ -10,3 +10,4 @@ python/pfsspecsim.egg-info
 example/notebooks/tmp
 example/notebooks/out
 example/notebooks/.ipynb_checkpoints
+.idea
