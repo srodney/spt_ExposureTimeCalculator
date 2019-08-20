@@ -107,7 +107,8 @@ def write_ascii(aset, asciiTable, outDir):
     """Write an ascii table"""
 
     outFile = os.path.join(outDir, asciiTable)
-    nFiber = len(aset.data.values()[0].flux)
+    #nFiber = len(aset.data.values()[0].flux)
+    nFiber = len(list(aset.data.values())[0].flux)
 
     for i in range(nFiber):
         with open('%s.dat' % (outFile) if nFiber == 1 else '%s.%d.dat' % (outFile, i), "w") as fd:
