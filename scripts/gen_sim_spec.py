@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-import os
-import sys
 import argparse
-import numpy as np
 
 from pfsspecsim import pfsspec
 
