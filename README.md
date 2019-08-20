@@ -1,6 +1,8 @@
 PFS Exposure Time Calculator and Spectrum Simulator 
 ============================================================
 
+2019 : quick & dirty hacks by Steve Rodney, trying to get it minimally functional with Python 3 and astropy.io.fits instead of pyfits.   In the process we dropped the submodule structure for the 'datamodel' component.  The ETC's datamodel submodule was way out of sync with the Subaru PFS datamodel anyway... and it looks like a major overhaul is needed to get the ETC back in sync. 
+
 This package is developed by the following people
 ---------------------------------
 The original ETC was developed and written by Christopher Hirata (Ohio State University), which is based on the package developed for WFIRST (C. Hirata; arXiv:1204.5151) and altered for use in PFS project.
@@ -36,13 +38,11 @@ To install the package, get the git repository by typing the following command o
 Once you clone the repository, you can pull updates from the next time on the directory like this:
 
     git pull
-    git submodule update --init
     make
     python setup.py install
 
-You also can get the zip or tar ball from the following page:
+Note from S.Rodney:  I've changed the structure so there is no longer a 'datamodel' submodule. So you don't need to do the 'git submodule update'
 
-http://sumire.pbworks.com/w/page/107534730/PFS%20ETC
 
 Before you use the package, please reed `README.md` carefully.
 
